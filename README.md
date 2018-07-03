@@ -2,6 +2,9 @@
 Python app for committing food data into tables
 
 
+
+EXTRACTING DATA INTO EXCEL
+
 You should obtain a .txt file as the end of the program. In order to properly extract the data into an Excel sheet, please follow these steps:
 
 For Excel 2016:
