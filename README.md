@@ -1,7 +1,14 @@
 # veggie-table
-Python app for committing food data into tables
+Python script for committing food data into tables
 
+This script allows the user to make LEFT/RIGHT inputs when viewing a series of videos, and collect the data generated during each video (e.g. LLRRLRL binary) in an Excel sheet for easy analysis
 
+On running the script, there will be a box for the user to enter the number of samples expected to be collected during the duration of each video (e.g. if 10 is entered, then 10 total recordings of LEFT or RIGHT should be carried out during the duration of each video). Type in a number, press Enter and then ESC to confirm.
+
+Functionality during video playback:
+  - LEFT/RIGHT arrow keys: records a "left" or "right" selection
+  - ESC: skips the video (and the program if it is the last video)
+  
 
 EXTRACTING DATA INTO EXCEL
 
