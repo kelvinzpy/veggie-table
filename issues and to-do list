@@ -1,0 +1,18 @@
+Current issues:
+Video playback too fast (could be something to do with native vs playback framerate?)
+Program shows "error: display Surface quit" after terminating even with pygame.quit() and exit()
+
+
+To-do list:
+Organize the script because it is super messy and gross
+  - without completely bugging the script out
+Figure out how to print stuff onto the GUI instead of only on the console
+  - Fidelity check
+  - improper input warnings
+  - other printed stuff (e.g. confirmation messages)
+Allow the user to choose food types before each video begins
+  - Need a preview frame of the video
+  - Plus probably a couple of selection boxes/list for each food
+Put an indicator on the screen whenever LEFT/RIGHT arrows are pressed (was thinking a green light of sorts on the bottom left/right corner)
+Allow the user to fast-forward a video (or play it at variable speeds)
+Various safety nets for catching silly inputs :>
