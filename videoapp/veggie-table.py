@@ -226,7 +226,7 @@ def fidcheck(datasheet, sampleNum): # where datasheet is the end-product excel t
 # function which compiles the generated data into a .csv file for data collection purposes, then terminates the program
 # OPENING THE .TXT FILE IN EXCEL WILL REMOVE LEADING 0s FROM THE RECORDED DATA (e.g. 00010 -> 10). PLEASE USE Data -> Import TXT IN EXCEL AND SELECT THE .TXT FILE MANUALLY.
 def writefile(datasheet):
-    headers = ['Participant Number', 'Movie Link', 'Recorded Data']
+    headers = ['Participant Number', 'Movie Link', 'Recorded Data', 'Left Food Sample', 'Right Food Sample']
     txtfile = "testsheetv2.txt" # change this to change the saved-as filename
     datasheet.insert(0, headers)
 #    for entry in datasheet:
