@@ -23,7 +23,6 @@ pip install numpy scipy matplotlib pandas pyopengl pyglet pillow moviepy lxml op
 pip install pyserial pyparallel egi iolabs
 pip install pytest coverage sphinx
 pip install pygame
-pip install pygameMenu
 pip install xlrd xlwt xlutil
 
 ...plus PyGameMenu from github https://github.com/ppizarror/pygame-menu
