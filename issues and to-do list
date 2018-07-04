@@ -1,6 +1,5 @@
 Current issues:
-Video playback too fast (could be something to do with native vs playback framerate?) (semi-fixed?)
-Program shows "error: display Surface quit" after terminating even with pygame.quit() and exit()
+code is messy :(
 
 
 To-do list:
