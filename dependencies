@@ -8,6 +8,20 @@ pip install pyserial pyparallel egi iolabs
 
 pip install pytest coverage sphinx)
 
-PyGame (pip install -U pygame --user)
+PyGame (pip install pygame)
 
-Excel (pip install xlrd xlwt xlutil)
+PyGameMenu (pip install pygameMenu)
+
+Excel stuff (pip install xlrd xlwt xlutil)
+
+
+
+One-shot copy-and-download for all dependencies here:
+
+pip install opencv-python
+pip install numpy scipy matplotlib pandas pyopengl pyglet pillow moviepy lxml openpyxl xlrd configobj pyyaml gevent greenlet msgpack-python psutil tables requests[security] pyosf cffi pysoundcard pysoundfile seaborn psychopy_ext python-bidi psychopy
+pip install pyserial pyparallel egi iolabs
+pip install pytest coverage sphinx
+pip install pygame
+pip install pygameMenu
+pip install xlrd xlwt xlutil
