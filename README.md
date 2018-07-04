@@ -5,6 +5,8 @@ This script allows the user to make LEFT/RIGHT inputs when viewing a series of v
 
 On running the script, there will be a box for the user to enter the number of samples expected to be collected during the duration of each video (e.g. if 10 is entered, then 10 total recordings of LEFT or RIGHT should be carried out during the duration of each video). Type in a number, press Enter and then ESC to confirm.
 
+Before each video plays, the user will be asked to identify the food from each side (left and right), given a preview frame (the first frame of the video).
+
 Functionality during video playback:
   - LEFT/RIGHT arrow keys: records a "left" or "right" selection
   - ESC: skips the video (and the program if it is the last video)
