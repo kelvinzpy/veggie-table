@@ -10,7 +10,7 @@ pip install pytest coverage sphinx)
 
 PyGame (pip install pygame)
 
-PyGameMenu (pip install pygameMenu)
+PyGameMenu (install the package from github: https://github.com/ppizarror/pygame-menu)
 
 Excel stuff (pip install xlrd xlwt xlutil)
 
@@ -25,3 +25,5 @@ pip install pytest coverage sphinx
 pip install pygame
 pip install pygameMenu
 pip install xlrd xlwt xlutil
+
+...plus PyGameMenu from github https://github.com/ppizarror/pygame-menu
