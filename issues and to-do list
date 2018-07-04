@@ -1,6 +1,6 @@
 Current issues:
 code is messy :(
-
+Program shows "error: display Surface quit" after terminating even with pygame.quit() and exit()
 
 To-do list:
 Organize the script because it is super messy and gross
