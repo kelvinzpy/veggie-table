@@ -1,18 +1,5 @@
 Current issues:
-code is messy :(
-Program shows "error: display Surface quit" after terminating even with pygame.quit() and exit()
 
 To-do list:
-Organize the script because it is super messy and gross
-  - without completely bugging the script out
-Figure out how to print stuff onto the GUI instead of only on the console
-  - Fidelity check
-  - improper input warnings
-  - other printed stuff (e.g. confirmation messages)
-Allow the user to choose food types before each video begins
-  - Need a preview frame of the video:
-      - going to either do this via a separate function (that adds a third column ("preview frame") to the initial spreadsheet), or
-      - pause the video playback immediately after it begins and allow for selection
-  - Plus probably a couple of selection boxes/list for each food
 Allow the user to fast-forward a video (or play it at variable speeds)
 Various safety nets for catching silly inputs :>

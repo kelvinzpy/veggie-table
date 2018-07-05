@@ -5,9 +5,11 @@ This script allows the user to make LEFT/RIGHT inputs when viewing a series of v
 
 This program also utilizes Pygame as the main GUI for more convenient usage (most importantly non-blocking inputs).
 
+CLICK VT.py TO EXECUTE THE SCRIPT!
+
 On running the script, there will be a box for the user to enter the number of samples expected to be collected during the duration of each video (e.g. if 10 is entered, then 10 total recordings of LEFT or RIGHT should be carried out during the duration of each video). Type in a number, press Enter and then ESC to confirm.
 
-Before each video plays, the user will be asked to identify the food from each side (left and right), given a preview frame (the first frame of the video).
+Before each video plays, the user will be asked to identify the food from each side (left and right), given a preview frame (the first frame of the video) and a list of selectable buttons for each column. Click the columns and press ESC or ENTER to confirm.
 
 Functionality during video playback:
   - LEFT/RIGHT arrow keys: records a "left" or "right" selection

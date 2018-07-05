@@ -12,8 +12,6 @@ PyGame (pip install pygame)
 
 Excel stuff (pip install xlrd xlwt xlutil)
 
-
-
 One-shot copy-and-download for all dependencies here:
 
 pip install opencv-python
