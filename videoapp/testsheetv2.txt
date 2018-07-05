@@ -1,3 +1,0 @@
-Participant Number,Movie Link,Recorded Data
-1,sample.mkv,000000000111100101101
-2,sample2.mkv,10100111100000010
