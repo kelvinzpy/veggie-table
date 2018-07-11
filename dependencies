@@ -1,10 +1,10 @@
 Requirements to run:
 
-OpenCV (pip install opencv-python)
+OpenCV (pip install msgpack opencv-python)
 
 PsychoPy (pip install numpy scipy matplotlib pandas pyopengl pyglet pillow moviepy lxml openpyxl xlrd configobj pyyaml gevent greenlet msgpack-python psutil tables requests[security] pyosf cffi pysoundcard pysoundfile seaborn psychopy_ext python-bidi psychopy
 
-pip install pyserial pyparallel egi iolabs
+pip install pyserial pyparallel egi
 
 pip install pytest coverage sphinx)
 
@@ -14,9 +14,9 @@ Excel stuff (pip install xlrd xlwt xlutil)
 
 One-shot copy-and-download for all dependencies here:
 
-pip install opencv-python
+pip install msgpack opencv-python
 pip install numpy scipy matplotlib pandas pyopengl pyglet pillow moviepy lxml openpyxl xlrd configobj pyyaml gevent greenlet msgpack-python psutil tables requests[security] pyosf cffi pysoundcard pysoundfile seaborn psychopy_ext python-bidi psychopy
-pip install pyserial pyparallel egi iolabs
+pip install pyserial pyparallel egi
 pip install pytest coverage sphinx
 pip install pygame
-pip install xlrd xlwt xlutil
+pip install xlrd xlwt
