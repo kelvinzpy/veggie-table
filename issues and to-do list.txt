@@ -1,5 +1,0 @@
-Current issues:
-
-To-do list:
-Allow the user to fast-forward a video (or play it at variable speeds)
-Various safety nets for catching silly inputs :>
