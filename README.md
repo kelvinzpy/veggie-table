@@ -1,6 +1,6 @@
 # veggie-table
 Python script for committing food data into tables
-
+ 
 This script allows the user to make LEFT/RIGHT inputs when viewing a series of videos, and collect the data generated during each video (e.g. LLRRLRL binary) in an Excel sheet for easy analysis.
 
 This program also utilizes Pygame as the main GUI for more convenient usage (most importantly non-blocking inputs).
