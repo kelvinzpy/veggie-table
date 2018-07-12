@@ -1,18 +1,18 @@
 # veggie-table
-Python script for committing food data into tables - this script should be functional cross-platform (windows, OSX, linux) to the best of my knowledge
-
+Python script for committing food data into tables
+ 
 This script allows the user to make LEFT/RIGHT inputs when viewing a series of videos, and collect the data generated during each video (e.g. LLRRLRL binary) in an Excel sheet for easy analysis.
 
 This program also utilizes Pygame as the main GUI for more convenient usage (most importantly non-blocking inputs).
 
-CLICK VT.py TO EXECUTE THE SCRIPT!
+VT.py is the front-end part of the script that contains the execution. VTbackend.py is the messy coding behind the scenes that shouldn't need to be touched.
 
-On running the script, there will be a box for the user to enter the number of samples expected to be collected during the duration of each video (e.g. if 10 is entered, then 10 total recordings of LEFT or RIGHT should be carried out during the duration of each video). Type in a number, press Enter and then ESC to confirm.
+Upon running the script, there will be a box for the user to enter the number of samples expected to be collected during the duration of each video (e.g. if 10 is entered, then 10 total recordings of LEFT or RIGHT should be carried out during the duration of each video). 
 
 Before each video plays, the user will be asked to identify the food from each side (left and right), given a preview frame (the first frame of the video) and a list of selectable buttons for each column. Click the columns and press ESC or ENTER to confirm.
 
 Functionality during video playback:
-  - LEFT/RIGHT arrow keys: records a "left" or "right" selection
+  - LEFT/RIGHT arrow keys (or A/D): records a "left" or "right" selection
   - ESC: skips the video (and the program if it is the last video)
   
 
