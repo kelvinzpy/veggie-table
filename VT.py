@@ -4,8 +4,10 @@ if __name__=='__main__':
     
 ##################### PROGRAM SETTINGS ##################### 
     inputsheet = 'testsheet.xlsx' # change this to change the name of the excel sheet being used as input (the one with participant number, video link etc.)
+    timingsheet = 'testtiming.xlsx' # change this to change the name of the excel sheet that contains frame and timing data (probably will be from MatLab programme)
     outputFile = 'testoutput' # change this to change the name of the output file
     outputType = '.txt' # change this to change the type of the output file (.txt or .csv)
+    trialnum = 15 # number of trials per participant
     
     LFoodList = ["banana", "orange", "idk"] # change the entries in these lists to change the possible foods that L/R side could be
     RFoodList = ["watermelon", "mango", "idk"] 
@@ -21,6 +23,8 @@ if __name__=='__main__':
 ##################### PROGRAM RUNS HERE #####################
     # Converts the provided input excel sheet into a list for interpretation
     datasheet = VT.excelToList(inputsheet)
+    timingsheet = VT.timingToList(timingsheet)
+    print (timingsheet)
     # Opens up the PyGame interactive window
     Window = VT.initScreen(w, h, fullscreen) 
     
@@ -29,7 +33,7 @@ if __name__=='__main__':
         
     # Plays videos in succession
     for i in range(len(datasheet)):
-        VT.vidPlayback(Window, i, datasheet, LFoodList, RFoodList, sampleNum, outputFile)
+        VT.vidPlayback(Window, trialnum, i, datasheet, LFoodList, RFoodList, sampleNum, outputFile)
                          
     # if program is run to completion (no early terminations):
     VT.fidcheck(datasheet, sampleNum) # does a fidelity check before program ends - check console for any errors
