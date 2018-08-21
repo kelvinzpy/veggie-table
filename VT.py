@@ -6,7 +6,7 @@ if __name__=='__main__':
     inputsheet = 'testsheet.xlsx' # change this to change the name of the excel sheet being used as input (the one with participant number, video link etc.)
     timingsheet = 'testtiming.xlsx' # change this to change the name of the excel sheet that contains frame and timing data (probably will be from MatLab programme)
     outputFile = 'testoutput' # change this to change the name of the output file
-    outputType = '.txt' # change this to change the type of the output file (.txt or .csv)
+    outputType = '.csv' # change this to change the type of the output file (.txt or .csv)
     trialnum = 15 # number of trials per participant
     
     LFoodList = ["banana", "orange", "idk"] # change the entries in these lists to change the possible foods that L/R side could be
@@ -14,17 +14,18 @@ if __name__=='__main__':
 ##################### PROGRAM SETTINGS #####################    
     
 ###################### VIDEO SETTINGS ######################
-    fullscreen = True # setting this to True means the video window will open in borderless fullscreen
+    fullscreen = False # setting this to True means the video window will open in borderless fullscreen
     w = 1920 # change these to change dimensions of window opened for video playback (default/recommended is 1920x850)
-    h = 850  # only need to set these if (fullscreen = False)
+    h = 1080  # only need to set these if (fullscreen = False)
 #   *** If the resolution is too small, it may affect video playback clarity
 ###################### VIDEO SETTINGS #######################
 
 ##################### PROGRAM RUNS HERE #####################
     # Converts the provided input excel sheet into a list for interpretation
-    datasheet = VT.excelToList(inputsheet)
-    timingsheet = VT.timingToList(timingsheet)
-    print (timingsheet)
+    datasheet = VT.listToUsableData(VT.inputToList(inputsheet))
+    print (datasheet)
+#    timingsheet = VT.timingToList(timingsheet)
+#    print (timingsheet)
     # Opens up the PyGame interactive window
     Window = VT.initScreen(w, h, fullscreen) 
     
@@ -32,10 +33,10 @@ if __name__=='__main__':
     sampleNum = VT.initSampleNum(Window)
         
     # Plays videos in succession
-    for i in range(len(datasheet)):
-        VT.vidPlayback(Window, trialnum, i, datasheet, LFoodList, RFoodList, sampleNum, outputFile)
+#    for i in range(len(datasheet)):
+    outputData = VT.vidPlayback(Window, datasheet, LFoodList, RFoodList, sampleNum, outputFile, trialnum)
                          
     # if program is run to completion (no early terminations):
-    VT.fidcheck(datasheet, sampleNum) # does a fidelity check before program ends - check console for any errors
-    VT.writefile(datasheet, sampleNum, outputFile, outputType) # writes outputs to file and terminates program
+#    VT.fidcheck(datasheet, sampleNum) # does a fidelity check before program ends - check console for any errors
+    VT.writefile(outputData, outputFile, outputType) # writes outputs to file and terminates program
 ##################### PROGRAM ENDS HERE #####################
