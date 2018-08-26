@@ -33,10 +33,13 @@ if __name__=='__main__':
     sampleNum = VT.initSampleNum(Window)
         
     # Plays videos in succession
-#    for i in range(len(datasheet)):
     outputData = VT.vidPlayback(Window, datasheet, LFoodList, RFoodList, sampleNum, outputFile, trialnum)
-                         
+    outputData = VT.semiCompile(outputData)    
+                     
     # if program is run to completion (no early terminations):
-#    VT.fidcheck(datasheet, sampleNum) # does a fidelity check before program ends - check console for any errors
-    VT.writefile(outputData, outputFile, outputType) # writes outputs to file and terminates program
+    
+    VT.fidcheck(outputData) # does a teeny (probably not very useful) fidelity check - check console for any glaring errors it finds
+    VT.writefile(outputData, outputFile, outputType) # writes outputs to file and terminates program 
+    ''' (don't put any functions after this ^ function) '''
+    
 ##################### PROGRAM ENDS HERE #####################

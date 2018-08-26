@@ -54,20 +54,5 @@ usabledatasheet = listToUsableData(datasheet)
 #x = [1, 2, 3, "", "", ""]
 #print (x)
 
-count = 0
-lista = []
-while True:
-    time.sleep(1)
-    count += 1
-    
-    if count % 10 == 0:
-        lista.append(banana)
-        
-        banana = count
-        
-        
-        
-    
-    
-    
-    
+i = [""]*3
+print (i)

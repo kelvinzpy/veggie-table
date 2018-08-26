@@ -293,11 +293,36 @@ def winlossBanner(screen, win):
         pygame.draw.rect(screen, (200, 0, 0), (0,0,windowW,200), 0)
     pygame.display.update()
 
+# draws the color of the feedback in the middle area of the screen   
+def colorBanner(screen, color):
+    orange = (255, 128, 0)
+    purple = (127, 0, 255)
+    blue = (102, 178, 255)
+    red = (255, 102, 102)
+    
+    if color == "orange":
+        pygame.draw.rect(screen, orange, ((windowW/2 - 100),windowH - 400,400,200), 0)
+    if color == "purple":
+        pygame.draw.rect(screen, purple, ((windowW/2 - 100),windowH - 400,400,200), 0)
+    if color == "blue":
+        pygame.draw.rect(screen, blue, ((windowW/2 - 100),windowH - 400,400,200), 0)    
+    if color == "red":
+        pygame.draw.rect(screen, red, ((windowW/2 - 100),windowH - 400,400,200), 0)
+    pygame.display.update()
+
 def checkWin():
     ''' forgot what I was supposed to do here'''
+    ''' probably not important? :) '''
 
+
+# main function for playing video
 def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, trialnum = 10):
-
+    
+    framecount = 0 # for a janky frame number counting tool (increments by 1 per loop, i.e. per frame drawn)
+    
+    clock = pygame.time.Clock()
+    fps = 30
+    
     overlay = pygame.draw.rect(screen, (30, 30, 30), (0,0,windowW,windowH), 0) # call this to reset the screen
     
     subID = datasheet[0]
@@ -306,14 +331,16 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
     saltFood = datasheet[3]
     isSweetLeft = datasheet[4]
     trialData = datasheet[5]
+    
     allIndexes = [] # list of all frame numbers where reward feedback becomes active
     for item in trialData:
         allIndexes.append(item[3])
-    trialWinLoss = [] # list of tuples in the format --> ("trial number", "1 if win and 0 if loss")
+        
+    trialWinLossColor = [] # list of tuples in the format --> ("trial number", "1 if win and 0 if loss", "color of feedback")
     for item in trialData:
-        trialWinLoss.append((item[0], item[-1]))
+        trialWinLossColor.append((item[0], item[-1], item[4]))
 
-    outputData = []
+    outputData = [] # initializes outputData
     for i in range(len(allIndexes)):
         outputData.append("")
 
@@ -332,41 +359,43 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
     else:
         leftborder = (windowW - videowidth)/2 # the x-value of the left border of the video
         rightborder = (windowW - (windowW - videowidth)/2) # the x-value of the right border of the video
-    clock = pygame.time.Clock()
+    
     running = True 
-    leftcount = 0
-    rightcount = 0
+
     selectedLFood = False
     selectedRFood = False
-    framecount = 0
+    
     #                     0      1       2          3           4       5  6  7  8  9  10 11   12      13   14   15    16   17
     defaultOutputRow = [subID, video, sweetFood, saltFood, isSweetLeft, 0, "","","","","","", "NaN", "NaN",  0 , 0 , "NaN", ""]
-
+    
+    
     while running:
       # Capture frame-by-frame
-      clock.tick(30) # determines the FPS of the playing video. Highly discourage changing as this is tied to a bunch of other input data that assumes 30fps
+      clock.tick(fps) # determines the FPS of the playing video. Highly discourage changing as this is tied to a bunch of other input data that assumes 30fps
+    
       ret, frame = cap.read()
       
       if framecount in allIndexes: # i.e. if the video has reached the point where feedback state has become active for the previous trial
-          
+          try:
+              for i in range(-13,0):
+                  datasheet[5][index].append(defaultOutputRow[i])
+              del datasheet[5][index][7:14] # extra repeated info gets deleted (change the values if there're any changes to the desired final headers)
+          except UnboundLocalError:
+              pass
+                  
           pygame.draw.rect(screen, (30, 30, 30), (0,(windowH - 150),windowW,150), 0)
           pygame.display.update()
           
+          # draws all the relevant information on the screen, varies by trial
           index = allIndexes.index(framecount)
-          relevantTrial = trialWinLoss[index]
+          relevantTrial = trialWinLossColor[index]
           trialnum = relevantTrial[0]
           isWin = relevantTrial[1]
+          feedbackColor = relevantTrial[2]
           winlossBanner(screen, isWin)
+          colorBanner(screen, feedbackColor)
           screenwrite(screen, "END OF TRIAL #"+str(trialnum), 20, textcolor = (255,255,255))
           pygame.display.update()
-          
-          
-          
-          print ("the current row is:", defaultOutputRow)
-          print ()
-          
-          for item in outputData:
-              print (item)
           
           trialnumber = trialData[index][0]
           blockText = trialData[index][1]
@@ -376,13 +405,12 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
           feedbackID = trialData[index][5]  
           winloss = trialData[index][6]
           
+          # this sets up the row we're working with (as defined by the 'index' above)
           defaultOutputRow[5], defaultOutputRow[6], defaultOutputRow[7], defaultOutputRow[8], defaultOutputRow[9], defaultOutputRow[10], defaultOutputRow[11] = trialnumber, feedbackFrame, blockText, blockID, feedbackID, feedbackColor, winloss
           # ^ this is more spaghetti code than a tech start-up in Rome
           
-''' WHY DOES THE CODE ABOVE CHANGE ALL THE EXISTING ROWS INSTEAD OF ONLY THE LAST ONE??????????????????????????????? '''
-
-          print ()
-          for item in outputData:
+          # for debugging purposes
+          for item in datasheet:
               print (item)
 
           '''
@@ -408,9 +436,19 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
           '''
           
           if defaultOutputRow[11] == 1:
-              defaultOutputRow[17] = "error_sub"
+                defaultOutputRow[12] = "NaN"
+                defaultOutputRow[13] = "NaN"
+                defaultOutputRow[14] = 0
+                defaultOutputRow[15] = 1
+                defaultOutputRow[16] = "NaN"
+                defaultOutputRow[17] = "error"
           if defaultOutputRow[11] == 0:
-              defaultOutputRow[17] = "loss"
+                defaultOutputRow[12] = "NaN"
+                defaultOutputRow[13] = "NaN"
+                defaultOutputRow[14] = 0
+                defaultOutputRow[15] = 0
+                defaultOutputRow[16] = "NaN"
+                defaultOutputRow[17] = "loss"
 
       if ret == True:
      
@@ -446,7 +484,7 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
 #                entry[4] += "0"
 #                leftcount += 1
                 
-                ''' draw some indicator that 'left' was pressed ''' 
+                ''' draw some indicator that 'left' was pressed, override all previous inputs ''' 
                 pygame.draw.rect(screen, (30, 30, 30), (0,(windowH - 150),windowW,150), 0)
                 pygame.draw.rect(screen, (0, 200, 0), (0,(windowH - 150),700,150), 0)
                 pygame.display.update()
@@ -464,7 +502,7 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
                     defaultOutputRow[14] = 0
                     defaultOutputRow[15] = 1
                     defaultOutputRow[16] = "NaN"
-                    defaultOutputRow[17] = "error_sub"
+                    defaultOutputRow[17] = "error"
                 pass
             
             # to record a selection of the right sample
@@ -474,7 +512,7 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
 #                entry[4] += "1"
 #                rightcount += 1
 
-                ''' draw some indicator that 'right' was pressed '''                
+                ''' draw some indicator that 'right' was pressed, override all previous inputs '''                
                 pygame.draw.rect(screen, (30, 30, 30), (0,(windowH - 150),windowW,150), 0)
                 pygame.draw.rect(screen, (0, 200, 0), (windowW,(windowH - 150),-700,150), 0)
                 pygame.display.update()
@@ -492,7 +530,7 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
                     defaultOutputRow[14] = 0
                     defaultOutputRow[15] = 1
                     defaultOutputRow[16] = "NaN"
-                    defaultOutputRow[17] = "error_sub"
+                    defaultOutputRow[17] = "error"
                 pass            
             
             
@@ -509,7 +547,7 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
                     defaultOutputRow[14] = 0
                     defaultOutputRow[15] = 1
                     defaultOutputRow[16] = "NaN"
-                    defaultOutputRow[17] = "error_sub"
+                    defaultOutputRow[17] = "error"
                 if defaultOutputRow[11] == 0:
                     defaultOutputRow[12] = "NaN"
                     defaultOutputRow[13] = "NaN"
@@ -519,6 +557,7 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
                     defaultOutputRow[17] = "loss"
                 pass
             
+            #this is for debugging (press K to print current trial/row)
             if event.type == KEYDOWN and event.key == K_k:
                 print (defaultOutputRow)
             
@@ -529,14 +568,17 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
                 running = False
                 break
             
+            # speeds up video playback when T is held down
+            if event.type == KEYDOWN and event.key == K_t:
+                fps = 150
+            
+            # returns video playback to normal when T is released
+            if event.type == KEYUP and event.key == K_t:
+                fps = 30
+            
         framecount += 1
 #        print (framecount)
-        if framecount in allIndexes:
-            try:
-                outputData[index] = defaultOutputRow
-            except UnboundLocalError:
-                pass
-            
+
       # Break the loop
       else: 
           break
@@ -544,11 +586,74 @@ def vidPlayback(screen, datasheet, LFoodList, RFoodList, sampleNum, txtfile, tri
     # When everything done, release the video capture object
     cap.release()
     
-    print (outputData)
-     
+    for item in datasheet[5]:
+        print (item)
     # Closes all the frames
     cv2.destroyAllWindows()
+    return datasheet
+
+
+
+# this makes the format of the datasheet more similar to an excel sheet, with redundant info repeated and in the format of [[row1], [row2], [row3], etc.]
+def semiCompile(datasheet):
+    outputData = [""]*len(datasheet[5])
+    for i in range(len(outputData)):        
+        outputData[i] = [datasheet[0], datasheet[1], datasheet[2], datasheet[3], datasheet[4]]
+        for j in datasheet[5][i]:
+            outputData[i].append(j)
+            
+    for trial in outputData:
+        trial[8] = int(float(trial[8])/30) # converts the frame number of feedback state into seconds
+    
     return outputData
+    
+
+#checks if there are any blatant issues with the inputs (barring less obvious coder errors)
+def fidcheck(outputData):
+    columns = len(outputData[0])
+    rightLength = 0
+    for trial in outputData:
+        if len(trial) != columns:
+            print ("There are missing inputs for certain trials (likely due to early termination of program - please recheck the output file)")
+            break
+        else:
+            rightLength += 1
+
+    print ("Fidelity check complete!")
+    if rightLength == len(outputData):
+        print ("No glaring errors found (be sure to still double check though!)")
+
+
+
+# function which compiles the generated data into a .csv (technically .txt) file for data collection purposes, then terminates the program
+# OPENING THE .TXT FILE IN EXCEL WILL REMOVE LEADING 0s FROM THE RECORDED DATA (e.g. 00010 -> 10). PLEASE USE Data -> Import TXT IN EXCEL AND SELECT THE .TXT FILE MANUALLY. (see README)
+def writefile(outputData, file = 'testoutput', filetype = '.txt'):  # change filetype to '.csv' for a csv file instead
+    headers = ['subID', 'video_link', 'food_text_sweet', 'food_text_salt', 'sweet_loc_left', 'trial_num', 'blockText', 'blockID', 'reward_feedback_on', 'feedback_state_color', 'feedback_state',  'trial_win',	'code_numeric',	'code_keypress', 'coder_error', 'sub_error', 'choose_left', 'code_text']
+    file += filetype
+    outputData.insert(0, headers)
+    done = False
+    
+    
+    # for debugging
+    for item in outputData:
+        print (item)
+
+    while not done:
+        
+        
+        try:
+            with open(file, "w") as output:
+                writer = csv.writer(output, lineterminator='\n')
+                writer.writerows(outputData)
+                done = True
+        except PermissionError: # if the .txt file is open on the computer or requires admin privileges to edit
+            print ("Please close the file if it is open on your computer. Retrying in 10 seconds")
+            time.sleep(10)
+                
+    print ("Data written to file", file, "- please check for any inaccuracies")
+    print ("Program shutting down in 5 seconds...")
+    pygame.quit()
+    sys.exit()    
 
 
 # TO REVISE
@@ -577,32 +682,5 @@ def fidcheck(datasheet, sampleNum): # where datasheet is the end-product excel t
     if totalCount != rightLength:
         print ("ERROR:", (totalCount - rightLength), "entries out of", totalCount, "did not match provided sample number. Advise restarting")
 '''
-
-# function which compiles the generated data into a .csv (technically .txt) file for data collection purposes, then terminates the program
-# OPENING THE .TXT FILE IN EXCEL WILL REMOVE LEADING 0s FROM THE RECORDED DATA (e.g. 00010 -> 10). PLEASE USE Data -> Import TXT IN EXCEL AND SELECT THE .TXT FILE MANUALLY. (see README)
-def writefile(outputData, file = 'testoutput', filetype = '.txt'):  # change filetype to '.csv' for a csv file instead
-    headers = ['subID', 'video_link', 'food_text_sweet', 'food_text_salt', 'sweet_loc_left', 'trial_num', 'reward_feedback_on', 'blockText', 'blockID', 'feedback_state', 'feedback_state_color', 'trial_win',	'code_numeric',	'code_keypress', 'coder_error', 'sub_error', 'choose_left', 'code_text']
-    file += filetype
-    outputData.insert(0, headers)
-    done = False
-    while not done:
-        
-        
-        try:
-            with open(file, "w") as output:
-                writer = csv.writer(output, lineterminator='\n')
-                writer.writerows(outputData)
-                done = True
-        except PermissionError: # if the .txt file is open on the computer or requires admin privileges to edit
-            print ("Please close the file if it is open on your computer. Retrying in 10 seconds")
-            time.sleep(10)
-                
-    print ("Data written to file", file, "- please check for any inaccuracies")
-    print ("Make sure to open the .csv file from Excel -> Data -> Import TXT instead of directly through Excel! (See README for clarification.)")
-    print ("Program shutting down in 5 seconds...")
-    pygame.quit()
-    sys.exit()    
-
-
 
 
