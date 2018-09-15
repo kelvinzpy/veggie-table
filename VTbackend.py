@@ -77,42 +77,46 @@ def inputToList(file):
             # 5th entry: colour of the feedback state in text (e.g. orange, blue)
             # 6th entry: feedback state colour's ID number
             # 7th entry: if the trial was a win or a loss
+#   2 datasheets (1 for each block!)
 def listToUsableData(datasheet):
-    datasheet[0].insert(0,"")
-    subID = datasheet[0][1]
-    videoLink = datasheet[0][2]
-    sweetFood = datasheet[0][3]
-    saltFood = datasheet[0][4]
-    isSweetLeft = datasheet[0][5]
+    for i in datasheet:
+        print (i)
+    subID = datasheet[0][0]
+    videoLink = datasheet[0][1]
+    sweetFood = datasheet[0][2]
+    saltFood = datasheet[0][3]
+    isSweetLeft = datasheet[0][4]
+    
+    separator = 0
+    for i in range(len(datasheet)): # this part detects the row number where the block changes (e.g. from Food to Money)
+        if datasheet[i][1] != videoLink:
+            separator = i 
+            print ("Separator index is:", separator)
+            break
+    
     variableData = []
-    for entry in range(len(datasheet)):
+    for entry in range(separator):
         entryData = []
         for i in range(-7, 0):
             entryData.append(datasheet[entry][i])
         entryData[2], entryData[0] = entryData[0], entryData[2]
         entryData[4], entryData[5] = entryData[5], entryData[4]
         variableData.append(entryData)
-    datasheet = [subID, videoLink, sweetFood, saltFood, isSweetLeft, variableData]
-    return datasheet
+    datasheet1 = [subID, videoLink, sweetFood, saltFood, isSweetLeft, variableData]
+    
+    variableData2 = []
+    for entry in range(separator, len(datasheet)):
+        entryData2 = []
+        for i in range(-7, 0):
+            entryData2.append(datasheet[entry][i])
+        entryData2[2], entryData2[0] = entryData2[0], entryData2[2]
+        entryData2[4], entryData2[5] = entryData2[5], entryData2[4]
+        variableData2.append(entryData2)
+    datasheet2 = [subID, datasheet[separator][1], sweetFood, saltFood, isSweetLeft, variableData2]
+    
+    return (datasheet1, datasheet2)
     
     
-# Opens frame/timing data from the MatLab programme to index the video into multiple trials
-def timingToList(file):
-    column_number = 4 # number of columns in the file
-    wb = open_workbook(file)
-    for s in wb.sheets():
-        timingsheet = []
-        for row in range(1,s.nrows): # 1 if headers, 0 if no headers
-            col_value = []
-            for col in range(column_number):
-                value  = (s.cell(row,col).value)
-#                try : value = str(float(value))
-#                except : pass
-                col_value.append(value)
-            timingsheet.append(col_value)
-    return timingsheet
-
-
 class NumberBox:
     
     def __init__(self, x, y, w, h, text=''):
@@ -175,6 +179,7 @@ class NumberBox:
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
 
+'''
 def inputData(screen):
     
     clock = pygame.time.Clock()
@@ -214,6 +219,7 @@ def inputData(screen):
         pygame.display.flip()
         clock.tick(30)
 
+
 def initSampleNum(screen):
     try:
         sampleNum = int(inputData(screen))
@@ -221,6 +227,9 @@ def initSampleNum(screen):
         sampleNum = 0
         print ("invalid input, sample number set to 0")
     return sampleNum
+
+'''
+
 
 class FoodBox:
 
@@ -294,15 +303,15 @@ def winlossBanner(screen, win):
 
 # draws the color of the feedback in the middle area of the screen   
 def colorBanner(screen, color):
-    orange = (255, 128, 0)
-    purple = (204, 153, 255)
+    green = (153, 255, 153)
+    yellow = (255, 200, 0)
     blue = (102, 178, 255)
     red = (255, 102, 102)
     
-    if color == "orange":
-        pygame.draw.rect(screen, orange, ((windowW/2 - 150),windowH - 400,300,100), 0)
-    if color == "purple":
-        pygame.draw.rect(screen, purple, ((windowW/2 - 150),windowH - 400,300,100), 0)
+    if color == "green":
+        pygame.draw.rect(screen, green, ((windowW/2 - 150),windowH - 400,300,100), 0)
+    if color == "yellow":
+        pygame.draw.rect(screen, yellow, ((windowW/2 - 150),windowH - 400,300,100), 0)
     if color == "blue":
         pygame.draw.rect(screen, blue, ((windowW/2 - 150),windowH - 400,300,100), 0)    
     if color == "red":
@@ -310,9 +319,9 @@ def colorBanner(screen, color):
     pygame.display.update()
 
 # start menu that requires some form of input (mouse click or keypress) before each video plays
-def startMenu(screen, subID):
+def startMenu(screen, subID, blocktype):
     pygame.draw.rect(screen, (30, 30, 30), (0,0,windowW,windowH), 0)
-    screenwrite(screen, "Click anywhere or press a button to start the video for subject " + str(subID), windowH/2)
+    screenwrite(screen, "Click anywhere or press a button to start the video for subject " + " " + str(subID) + ", " + str(blocktype), windowH/2)
     done = False
     while not done:
         for event in pygame.event.get():
@@ -323,7 +332,6 @@ def startMenu(screen, subID):
 
 # main function for playing video
 def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
-    
     
     framecount = 0 # for a janky frame number counting tool (increments by 1 per loop, i.e. per frame drawn)
     
@@ -338,6 +346,7 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
     saltFood = datasheet[3]
     isSweetLeft = datasheet[4]
     trialData = datasheet[5]
+    blocktype = trialData[0][1]
     isFood = False
     
     allIndexes = [] # list of all frame numbers where reward feedback becomes active
@@ -351,15 +360,14 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
     outputData = [] # initializes outputData
     for i in range(len(allIndexes)):
         outputData.append("")
-    if datasheet[5][0][1] == "Food" or datasheet[5][0][2] == 3:
-        isFood = True
+    
 
     print ("Now playing video of subject number", subID)
     overlay
     
     # Create a VideoCapture object and read from provided video link
     cap = cv2.VideoCapture(video)
-    
+
     videowidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))   # constants that determine dimensions of video playing
     videoheight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
@@ -382,7 +390,7 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
     
     
     # the 'click anywhere to start the video for subject 'xxx'' screen
-    startMenu(screen, subID)
+    startMenu(screen, subID, blocktype)
     
     
     while running:
@@ -390,6 +398,7 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
       clock.tick(fps) 
     
       ret, frame = cap.read()
+
       
       if framecount in allIndexes: # i.e. if the video has reached the point where feedback state has become active for the current trial
           try:
@@ -410,19 +419,25 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
           trialnum = relevantTrial[0]
           isWin = relevantTrial[1]
           feedbackColor = relevantTrial[2]          
-          
+          if datasheet[5][index][1] == "Food" or datasheet[5][index][2] == 1:
+              isFood = True          
           
           winlossBanner(screen, isWin) # draws banner over top of screen - green if win, red if loss
           screenwrite(screen, "END OF TRIAL #"+str(trialnum), 20, textcolor = (255,255,255)) # draws trial number on screen
                       
           # this allows the coder to confirm if the food shown on the left bowl is indeed e.g. Cheetos/Doritos/whatever
-          if index == 0 and confirmFood == False and isFood == True:
+          if confirmFood == False and isFood == True:
+              
+              pygame.draw.rect(screen, (30, 30, 30), (0, 100, windowW, 500), 0)
+              
               if isSweetLeft == 0: # if sweet food is supposed to be on the right
-                  screenwrite(screen, ("Does the left food bowl contain: " + str(saltFood) + "?"), videoheight + 100)
+                  screenwrite(screen, ("Does the left food bowl contain: " + str(saltFood) + "?"), 200)
               if isSweetLeft == 1: # if sweet food is supposed to be on the left
-                  screenwrite(screen, ("Does the left food bowl contain: " + str(sweetFood) + "?"), videoheight + 100)
-              confirmation = selectFood(screen, videoheight + 300, ['yes', 'no', 'idk'])
-              pygame.draw.rect(screen, (30, 30, 30), (0, videoheight, windowW, 500), 0)
+                  screenwrite(screen, ("Does the left food bowl contain: " + str(sweetFood) + "?"), 200)
+              confirmation = selectFood(screen, 300, ['yes', 'no', 'idk'])
+              
+#              pygame.draw.rect(screen, (30, 30, 30), (0, videoheight, windowW, 500), 0)
+              
 #              print ("You chose:", confirmation)
               if confirmation != 'yes': # if the coder inputs that the food is wrong (or that he isn't sure what the food is), then it modifies the output data such that a warning will be raised during fidelity checks
                   wrongFood = True 
@@ -487,14 +502,15 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
                 defaultOutputRow[17] = "loss"
 
       if ret == True:
-     
+
         # Display the resulting frame
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cv2.flip(frame,1,frame) # for some reason output is mirrored and has to be flipped again (?)
         frame = np.rot90(frame)
-        frame = pygame.surfarray.make_surface(frame)
 
-        screen.blit(frame, (((windowW - videowidth)/2),100))
+        frame = pygame.surfarray.make_surface(frame)
+        
+        screen.blit(frame, (((windowW - videowidth)/2),100)) # displays the frame in the centre and 100 pixels down (to allow space for the banner "END OF TRIAL #" etc.)
         pygame.display.update()
     
 
@@ -579,7 +595,7 @@ def vidPlayback(screen, datasheet, txtfile, ffMult = 5):
             
             
             # if terminating video early, will break/skip to next video
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
+            if (event.type == KEYDOWN and event.key == K_ESCAPE) or event.type == pygame.QUIT:
                 print ("Skipping to next subject")
                 for i in range(-13,0):          
                     datasheet[5][-1].append(defaultOutputRow[i])
@@ -630,7 +646,10 @@ def semiCompile(datasheet):
     for trial in outputData:
         trial[8] = int(float(trial[8])/30) # converts the frame number of feedback state into seconds
     
-    return outputData
+    subID =  outputData[0][0]
+    blocktype = outputData[0][6]
+    
+    return (outputData, subID, blocktype)
     
 
 #checks if there are any blatant issues with the inputs (barring less obvious coder errors)
@@ -647,8 +666,8 @@ def fidcheck(outputData):
     print ("Fidelity check complete!")
     if incomplete > 0: # if some trials do not have the respective inputs from the coder
         print ("There are missing inputs for", incomplete, "trials (likely due to early termination of program - please recheck the output file)")
-    if wrongFood > 0: # if the coder raised an issue with the food in the bowls (e.g. answered 'no' to 'is the food in the left bowl Cheetos?')
-        print ("There was an issue with the food being presented. Please recheck the accuracy of the food placed in the bowls")
+#    if wrongFood > 0: # if the coder raised an issue with the food in the bowls (e.g. answered 'no' to 'is the food in the left bowl Cheetos?')
+#        print ("There was an issue with the food being presented. Please recheck the accuracy of the food placed in the bowls")
     if incomplete == 0 and wrongFood == 0: # if no problems
         print ("No glaring errors found!")
 
@@ -658,7 +677,6 @@ def writefile(outputData, file = 'testoutput', filetype = '.csv'):  # change fil
     file += filetype
     outputData.insert(0, headers)
     done = False
-    
     
     # for debugging
 #    for item in outputData:
@@ -677,35 +695,7 @@ def writefile(outputData, file = 'testoutput', filetype = '.csv'):  # change fil
                 
     print ("Data written to file", file, "- please check for any inaccuracies")
 
-    pygame.quit()
-    sys.exit()    
 
 
-# TO REVISE
-'''
-# function which includes final checks on obtained recordings and terminates the program
-def fidcheck(datasheet, sampleNum): # where datasheet is the end-product excel table (with 1's and 0's),  
-                                    # and sampleNum is the initial number provided at the start 
-    rightLength = 0                 # as the number of times the participant chose a food
-    totalCount = len(datasheet)
-
-    print ("Checking for fidelity...")
-    for entry in datasheet:
-        choiceNumber = entry[4]         # Number of inputs made during each entry
-        if len(choiceNumber) == sampleNum:
-            rightLength += 1
-        if len(choiceNumber) != sampleNum:
-            print ("ERROR: Entry number", entry[0], "did not have an accurate recorded number of choices (with", len(choiceNumber), "instead of", sampleNum,"choices)")
-        if entry[2] == "idk" or entry[3] == "idk":
-            print ("ERROR: One or more food options for entry", entry[0], "are incomplete. Consider rectifying")
-        
-    print (rightLength, "entries with the indicated length out of", totalCount, "total entries")
-    if sampleNum == 0: # if the expected number of samples was not set in the beginning, or set to 0
-        print ("ERROR: Required number of choices should not be 0 - please recheck")
-    if totalCount == rightLength and sampleNum != 0: # if inputs during all videos matched the expected number, and sample number was not 0 -> successful fidelity check
-        print ("FIDELITY CHECK COMPLETE - all entries matched the expected number of samples! :)")
-    if totalCount != rightLength:
-        print ("ERROR:", (totalCount - rightLength), "entries out of", totalCount, "did not match provided sample number. Advise restarting")
-'''
 
 

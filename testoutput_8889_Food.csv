@@ -1,0 +1,11 @@
+subID,video_link,food_text_sweet,food_text_salt,sweet_loc_left,trial_num,blockText,blockID,reward_feedback_on_secs,feedback_state_color,feedback_state,trial_win,code_numeric,code_keypress,coder_error,sub_error,choose_left,code_text
+8889,video1.mp4,skittles,fritos,1,1,Food,1,4,red,3,0,NaN,NaN,0,0,NaN,loss
+8889,video1.mp4,skittles,fritos,1,2,Food,1,14,red,3,0,67,c,0,1,NaN,error
+8889,video1.mp4,skittles,fritos,1,3,Food,1,26,red,3,1,77,m,0,0,0,right
+8889,video1.mp4,skittles,fritos,1,4,Food,1,35,red,3,1,67,c,0,0,1,left
+8889,video1.mp4,skittles,fritos,1,5,Food,1,45,blue,2,1,67,c,0,0,1,left
+8889,video1.mp4,skittles,fritos,1,6,Food,1,55,blue,2,1,67,c,0,0,1,left
+8889,video1.mp4,skittles,fritos,1,7,Food,1,65,blue,2,1,77,m,0,0,0,right
+8889,video1.mp4,skittles,fritos,1,8,Food,1,75,red,3,1,77,m,0,0,0,right
+8889,video1.mp4,skittles,fritos,1,9,Food,1,86,red,3,1,67,c,0,0,1,left
+8889,video1.mp4,skittles,fritos,1,10,Food,1,96,blue,2,0,NaN,NaN,0,0,NaN,loss

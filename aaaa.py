@@ -54,5 +54,7 @@ usabledatasheet = listToUsableData(datasheet)
 #x = [1, 2, 3, "", "", ""]
 #print (x)
 
-i = [""]*3
-print (i)
+a = [0, 1, 2, 3, 4, 5]
+x = 2
+for i in range(x, len(a)):
+    print (a[i])
